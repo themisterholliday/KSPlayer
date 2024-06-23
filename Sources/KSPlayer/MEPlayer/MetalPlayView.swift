@@ -40,14 +40,15 @@ public final class MetalPlayView: UIView, VideoOutput {
     private var fps = Float(60) {
         didSet {
             if fps != oldValue {
-                if KSOptions.preferredFrame {
-                    let preferredFramesPerSecond = ceil(fps)
-                    if #available(iOS 15.0, tvOS 15.0, macOS 14.0, *) {
-                        displayLink.preferredFrameRateRange = CAFrameRateRange(minimum: preferredFramesPerSecond, maximum: 2 * preferredFramesPerSecond, __preferred: preferredFramesPerSecond)
-                    } else {
-                        displayLink.preferredFramesPerSecond = Int(preferredFramesPerSecond) << 1
-                    }
-                }
+                // HACK: Never set preffered Frame
+//                if KSOptions.preferredFrame {
+//                    let preferredFramesPerSecond = ceil(fps)
+//                    if #available(iOS 15.0, tvOS 15.0, macOS 14.0, *) {
+//                        displayLink.preferredFrameRateRange = CAFrameRateRange(minimum: preferredFramesPerSecond, maximum: 2 * preferredFramesPerSecond, __preferred: preferredFramesPerSecond)
+//                    } else {
+//                        displayLink.preferredFramesPerSecond = Int(preferredFramesPerSecond) << 1
+//                    }
+//                }
                 options.updateVideo(refreshRate: fps, isDovi: isDovi, formatDescription: formatDescription)
             }
         }
@@ -182,18 +183,19 @@ extension MetalPlayView {
             let cmtime = frame.cmtime
             let par = pixelBuffer.size
             let sar = pixelBuffer.aspectRatio
-            if let pixelBuffer = pixelBuffer.cvPixelBuffer, options.isUseDisplayLayer() {
-                if displayView.isHidden {
-                    displayView.isHidden = false
-                    metalView.isHidden = true
-                    metalView.clear()
-                }
-                if let dar = options.customizeDar(sar: sar, par: par) {
-                    pixelBuffer.aspectRatio = CGSize(width: dar.width, height: dar.height * par.width / par.height)
-                }
-                checkFormatDescription(pixelBuffer: pixelBuffer)
-                set(pixelBuffer: pixelBuffer, time: cmtime)
-            } else {
+            // HACK: Always use metal
+//            if let pixelBuffer = pixelBuffer.cvPixelBuffer, options.isUseDisplayLayer() {
+//                if displayView.isHidden {
+//                    displayView.isHidden = false
+//                    metalView.isHidden = true
+//                    metalView.clear()
+//                }
+//                if let dar = options.customizeDar(sar: sar, par: par) {
+//                    pixelBuffer.aspectRatio = CGSize(width: dar.width, height: dar.height * par.width / par.height)
+//                }
+//                checkFormatDescription(pixelBuffer: pixelBuffer)
+//                set(pixelBuffer: pixelBuffer, time: cmtime)
+//            } else {
                 if !displayView.isHidden {
                     displayView.isHidden = true
                     metalView.isHidden = false
@@ -216,7 +218,7 @@ extension MetalPlayView {
                 }
                 #endif
                 metalView.draw(pixelBuffer: pixelBuffer, display: options.display, size: size)
-            }
+//            }
             renderSource?.setVideo(time: cmtime, position: frame.position)
         }
     }

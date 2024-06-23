@@ -242,6 +242,8 @@ extension String {
             let font = UIFont(name: fontName, size: CGFloat(fontSize)) ?? UIFont.systemFont(ofSize: CGFloat(fontSize))
             attributes[.font] = font
         }
+        // HACK: Expansion for text is breaking when used in an Attributed string
+        attributes[.expansion] = 0
         return NSAttributedString(string: self, attributes: attributes)
     }
 }
