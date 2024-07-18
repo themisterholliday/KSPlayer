@@ -108,3 +108,16 @@ public class KSPictureInPictureController: AVPictureInPictureController {
         pipController?.view?.player.isMuted = true
     }
 }
+
+extension UIView {
+    var viewController: UIViewController? {
+        var next = next
+        while next != nil {
+            if let viewController = next as? UIViewController {
+                return viewController
+            }
+            next = next?.next
+        }
+        return nil
+    }
+}

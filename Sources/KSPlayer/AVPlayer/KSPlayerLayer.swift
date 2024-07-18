@@ -130,7 +130,9 @@ open class KSPlayerLayer: NSObject {
             let firstPlayerType: MediaPlayerProtocol.Type
             if isWirelessRouteActive {
                 // airplay的话，默认使用KSAVPlayer
-                firstPlayerType = KSAVPlayer.self
+//                firstPlayerType = KSAVPlayer.self
+                assertionFailure("Airplay is not supported")
+                return
             } else if options.display != .plane {
                 // AR模式只能用KSMEPlayer
                 // swiftlint:disable force_cast

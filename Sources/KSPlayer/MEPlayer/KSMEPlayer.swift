@@ -426,7 +426,7 @@ extension KSMEPlayer: MediaPlayerProtocol {
     }
 
     @MainActor
-    public var contentMode: UIViewContentMode {
+    public var contentMode: UIView.ContentMode {
         get {
             view?.contentMode ?? .center
         }

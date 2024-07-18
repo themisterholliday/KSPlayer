@@ -108,7 +108,7 @@ public final class MetalPlayView: UIView, VideoOutput {
         ])
     }
 
-    override public var contentMode: UIViewContentMode {
+    override public var contentMode: UIView.ContentMode {
         didSet {
             metalView.contentMode = contentMode
             switch contentMode {

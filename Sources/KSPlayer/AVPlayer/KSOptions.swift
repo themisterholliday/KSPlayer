@@ -455,7 +455,7 @@ public enum VideoInterlacingType: String {
 }
 
 public extension KSOptions {
-    static var firstPlayerType: MediaPlayerProtocol.Type = KSAVPlayer.self
+    static var firstPlayerType: MediaPlayerProtocol.Type = KSMEPlayer.self
     static var secondPlayerType: MediaPlayerProtocol.Type?
     /// 最低缓存视频时间
     static var preferredForwardBufferDuration = 3.0
@@ -549,6 +549,22 @@ public extension KSOptions {
         return channelCount
     }
     #endif
+}
+
+public extension KSOptions {
+//    /// 顶部返回、标题、AirPlay按钮 显示选项，默认.Always，可选.HorizantalOnly、.None
+//    static var topBarShowInCase = KSPlayerTopBarShowCase.always
+    /// 自动隐藏操作栏的时间间隔 默认5秒
+    static var animateDelayTimeInterval = TimeInterval(5)
+    /// 开启亮度手势 默认true
+    static var enableBrightnessGestures = true
+    /// 开启音量手势 默认true
+    static var enableVolumeGestures = true
+    /// 开启进度滑动手势 默认true
+    static var enablePlaytimeGestures = true
+    /// 播放内核选择策略 先使用firstPlayer，失败了自动切换到secondPlayer，播放内核有KSAVPlayer、KSMEPlayer两个选项
+    /// 是否能后台播放视频
+    static var canBackgroundPlay = false
 }
 
 public enum LogLevel: Int32, CustomStringConvertible {
