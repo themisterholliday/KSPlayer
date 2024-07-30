@@ -40,15 +40,14 @@ public final class MetalPlayView: UIView, VideoOutput {
     private var fps = Float(60) {
         didSet {
             if fps != oldValue {
-                // HACK: Never set preffered Frame
-//                if KSOptions.preferredFrame {
-//                    let preferredFramesPerSecond = ceil(fps)
-//                    if #available(iOS 15.0, tvOS 15.0, macOS 14.0, *) {
-//                        displayLink.preferredFrameRateRange = CAFrameRateRange(minimum: preferredFramesPerSecond, maximum: 2 * preferredFramesPerSecond, __preferred: preferredFramesPerSecond)
-//                    } else {
-//                        displayLink.preferredFramesPerSecond = Int(preferredFramesPerSecond) << 1
-//                    }
-//                }
+                if KSOptions.preferredFrame {
+                    let preferredFramesPerSecond = ceil(fps)
+                    if #available(iOS 15.0, tvOS 15.0, macOS 14.0, *) {
+                        displayLink.preferredFrameRateRange = CAFrameRateRange(minimum: preferredFramesPerSecond, maximum: 2 * preferredFramesPerSecond, __preferred: preferredFramesPerSecond)
+                    } else {
+                        displayLink.preferredFramesPerSecond = Int(preferredFramesPerSecond) << 1
+                    }
+                }
                 options.updateVideo(refreshRate: fps, isDovi: isDovi, formatDescription: formatDescription)
             }
         }
@@ -76,7 +75,8 @@ public final class MetalPlayView: UIView, VideoOutput {
         super.init(frame: .zero)
         addSubview(displayView)
         addSubview(metalView)
-        metalView.isHidden = true
+//        metalView.isHidden = true
+        displayView.isHidden = true
         //        displayLink = CADisplayLink(block: renderFrame)
         displayLink = CADisplayLink(target: self, selector: #selector(renderFrame))
         // 一定要用common。不然在视频上面操作view的话，那就会卡顿了。
