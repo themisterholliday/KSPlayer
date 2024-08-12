@@ -43,7 +43,13 @@ public final class AudioUnitPlayer: AudioOutput {
     public var isMuted: Bool = false
     private var outputLatency = TimeInterval(0)
     
-    public var audioOffset = 0.0
+    public var audioOffset = 0.0 {
+        didSet {
+            #if !os(macOS)
+            outputLatency = AVAudioSession.sharedInstance().outputLatency + audioOffset
+            #endif
+        }
+    }
     
     public init() {
         var descriptionForOutput = AudioComponentDescription()
