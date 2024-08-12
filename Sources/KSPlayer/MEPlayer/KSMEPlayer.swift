@@ -91,6 +91,15 @@ public class KSMEPlayer: NSObject {
             }
         }
     }
+    
+    public var audioOffset: Double = 0.0 {
+        didSet {
+            // NOTE: Audio offset just works for AudioUnit rn
+            if audioOutput is AudioUnitPlayer {
+                (audioOutput as? AudioUnitPlayer)?.audioOffset = audioOffset
+            }
+        }
+    }
 
     public private(set) var loadState = MediaLoadState.idle {
         didSet {

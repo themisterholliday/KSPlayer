@@ -75,8 +75,7 @@ public final class MetalPlayView: UIView, VideoOutput {
         super.init(frame: .zero)
         addSubview(displayView)
         addSubview(metalView)
-//        metalView.isHidden = true
-        displayView.isHidden = true
+        metalView.isHidden = true
         //        displayLink = CADisplayLink(block: renderFrame)
         displayLink = CADisplayLink(target: self, selector: #selector(renderFrame))
         // 一定要用common。不然在视频上面操作view的话，那就会卡顿了。
@@ -183,19 +182,18 @@ extension MetalPlayView {
             let cmtime = frame.cmtime
             let par = pixelBuffer.size
             let sar = pixelBuffer.aspectRatio
-            // HACK: Always use metal
-//            if let pixelBuffer = pixelBuffer.cvPixelBuffer, options.isUseDisplayLayer() {
-//                if displayView.isHidden {
-//                    displayView.isHidden = false
-//                    metalView.isHidden = true
-//                    metalView.clear()
-//                }
-//                if let dar = options.customizeDar(sar: sar, par: par) {
-//                    pixelBuffer.aspectRatio = CGSize(width: dar.width, height: dar.height * par.width / par.height)
-//                }
-//                checkFormatDescription(pixelBuffer: pixelBuffer)
-//                set(pixelBuffer: pixelBuffer, time: cmtime)
-//            } else {
+            if let pixelBuffer = pixelBuffer.cvPixelBuffer, options.isUseDisplayLayer() {
+                if displayView.isHidden {
+                    displayView.isHidden = false
+                    metalView.isHidden = true
+                    metalView.clear()
+                }
+                if let dar = options.customizeDar(sar: sar, par: par) {
+                    pixelBuffer.aspectRatio = CGSize(width: dar.width, height: dar.height * par.width / par.height)
+                }
+                checkFormatDescription(pixelBuffer: pixelBuffer)
+                set(pixelBuffer: pixelBuffer, time: cmtime)
+            } else {
                 if !displayView.isHidden {
                     displayView.isHidden = true
                     metalView.isHidden = false
@@ -218,7 +216,7 @@ extension MetalPlayView {
                 }
                 #endif
                 metalView.draw(pixelBuffer: pixelBuffer, display: options.display, size: size)
-//            }
+            }
             renderSource?.setVideo(time: cmtime, position: frame.position)
         }
     }

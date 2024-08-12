@@ -347,7 +347,8 @@ open class KSOptions {
         else {
             return
         }
-        if let dynamicRange = isDovi ? .dolbyVision : formatDescription?.dynamicRange {
+        // PATCH: Never set to use "dolbyVision" because we will strip those NAL units
+        if let dynamicRange = isDovi ? .hdr10 : formatDescription?.dynamicRange {
             displayManager.preferredDisplayCriteria = AVDisplayCriteria(refreshRate: refreshRate, videoDynamicRange: dynamicRange.rawValue)
         }
         #endif

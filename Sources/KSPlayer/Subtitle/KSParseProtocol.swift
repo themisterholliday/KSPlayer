@@ -149,7 +149,9 @@ extension String {
         let attributedStr = NSMutableAttributedString()
         var attributed = attributed ?? [:]
         for lineCode in lineCodes {
-            attributedStr.append(lineCode.0.parseStyle(attributes: &attributed, style: lineCode.1, textPosition: &textPosition))
+//            attributedStr.append(lineCode.0.parseStyle(attributes: &attributed, style: lineCode.1, textPosition: &textPosition))
+            // PATCH: Only return the text for any ASS subtitles, avoiding any issues with styles.
+            attributedStr.append(NSAttributedString(string: lineCode.0))
         }
         return attributedStr
     }

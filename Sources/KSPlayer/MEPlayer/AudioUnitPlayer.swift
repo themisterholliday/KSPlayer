@@ -42,6 +42,9 @@ public final class AudioUnitPlayer: AudioOutput {
     public var volume: Float = 1
     public var isMuted: Bool = false
     private var outputLatency = TimeInterval(0)
+    
+    public var audioOffset = 0.0
+    
     public init() {
         var descriptionForOutput = AudioComponentDescription()
         descriptionForOutput.componentType = kAudioUnitType_Output
@@ -50,7 +53,7 @@ public final class AudioUnitPlayer: AudioOutput {
         descriptionForOutput.componentSubType = kAudioUnitSubType_HALOutput
         #else
         descriptionForOutput.componentSubType = kAudioUnitSubType_RemoteIO
-        outputLatency = AVAudioSession.sharedInstance().outputLatency
+        outputLatency = AVAudioSession.sharedInstance().outputLatency + audioOffset
         #endif
         let nodeForOutput = AudioComponentFindNext(nil, &descriptionForOutput)
         AudioComponentInstanceNew(nodeForOutput!, &audioUnitForOutput)
@@ -97,7 +100,7 @@ public final class AudioUnitPlayer: AudioOutput {
     public func flush() {
         currentRender = nil
         #if !os(macOS)
-        outputLatency = AVAudioSession.sharedInstance().outputLatency
+        outputLatency = AVAudioSession.sharedInstance().outputLatency + audioOffset
         #endif
     }
 
