@@ -104,6 +104,7 @@ public class AudioEnginePlayer: AudioOutput {
     public let engine = AVAudioEngine()
     private var sourceNode: AVAudioSourceNode?
     private var sourceNodeAudioFormat: AVAudioFormat?
+    let delayEffect = AVAudioUnitDelay()
 
 //    private let reverb = AVAudioUnitReverb()
 //    private let nbandEQ = AVAudioUnitEQ()
@@ -148,15 +149,31 @@ public class AudioEnginePlayer: AudioOutput {
             engine.mainMixerNode.outputVolume = newValue ? 0.0 : 1.0
         }
     }
+    
+    public var audioOffset = 0.0 {
+        didSet {
+            #if !os(macOS)
+            delayEffect.delayTime = audioOffset
+            #endif
+        }
+    }
 
     public required init() {
         engine.attach(timePitch)
+//        engine.attach(delayEffect)
         if let audioUnit = engine.outputNode.audioUnit {
             addRenderNotify(audioUnit: audioUnit)
         }
         #if !os(macOS)
         outputLatency = AVAudioSession.sharedInstance().outputLatency
         #endif
+        
+        // TODO: (Craig Holliday 08/09/2024) delay
+        delayEffect.delayTime = 0
+        // No feedback to avoid echo/reverb
+        delayEffect.feedback = 0
+        // 100% wet, 0% dry for complete delay
+        delayEffect.wetDryMix = 100
     }
 
     public func prepare(audioFormat: AVAudioFormat) {
@@ -195,6 +212,12 @@ public class AudioEnginePlayer: AudioOutput {
         }
         // 一定要传入format，这样多音轨音响才不会有问题。
         engine.connect(nodes: nodes, format: audioFormat)
+        
+        
+        // TODO: This is breaking some audio playback. Seemingly random. Added when trying to enable audio offset
+//        engine.connect(sourceNode, to: delayEffect, format: nil)
+//        engine.connect(delayEffect, to: engine.mainMixerNode, format: nil)
+
         engine.prepare()
         if isRunning {
             try? engine.start()

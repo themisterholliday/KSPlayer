@@ -338,6 +338,8 @@ open class KSOptions {
     @MainActor
     open func updateVideo(refreshRate: Float, isDovi: Bool, formatDescription: CMFormatDescription?) {
         #if os(tvOS) || os(xrOS)
+        // PATCH: We don't want KSPlayer handling Display Criteria. We'll handle that in-app
+        return
         /**
          快速更改preferredDisplayCriteria，会导致isDisplayModeSwitchInProgress变成true。
          例如退出一个视频，然后在3s内重新进入的话。所以不判断isDisplayModeSwitchInProgress了

@@ -98,6 +98,9 @@ public class KSMEPlayer: NSObject {
             if audioOutput is AudioUnitPlayer {
                 (audioOutput as? AudioUnitPlayer)?.audioOffset = audioOffset
             }
+            if audioOutput is AudioEnginePlayer {
+                (audioOutput as? AudioEnginePlayer)?.audioOffset = audioOffset
+            }
         }
     }
 
